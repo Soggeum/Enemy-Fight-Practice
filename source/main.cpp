@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>    // sleep()
 #include "Player.hpp"
 #include "Warrior.hpp"
 #include "Magician.hpp"
@@ -14,8 +15,6 @@ int main() {
     int job_choice = 0;
     string nickname;
 
-    Player* player = nullptr;
-
     cout << "* 닉네임을 입력해주세요: ";
     cin >> nickname;
 
@@ -30,38 +29,44 @@ int main() {
     cout << "선택: ";
     cin >> job_choice;
 
+    Player* player[4]{};
     switch (job_choice) {
     case 1:
-        player = new Warrior(nickname);
+        player[0] = new Warrior(nickname);
         break;
     case 2:
-        player = new Magician(nickname);
+        player[1] = new Magician(nickname);
         break;
     case 3:
-        player = new Thief(nickname);
+        player[2] = new Thief(nickname);
         break;
     case 4:
-        player = new Archer(nickname);
+        player[3] = new Archer(nickname);
         break;
     default:
         cout << "잘못된 입력입니다." << endl;
         return 1;
     }
 
-    player->attack();
-    player->printPlayerStatus();
+    player[job_choice - 1]->attack();
+    player[job_choice - 1]->printPlayerStatus();
 
     Monster* monster = new Monster("슬라임");
 	cout << monster->getName() << " 몬스터와 전투를 시작합니다!" << endl;
+    Sleep(500);
+
     do {
-        player->attack(monster);
+        player[job_choice - 1]->attack(monster);
+        Sleep(500);
         if (monster->getHP() == 0)         
             break;
-        monster->attack(player);
-    } 
-    while ((player->getHP()) && monster->getHP());
 
-    delete player;
+        monster->attack(player[job_choice - 1]);
+        Sleep(500);
+    } 
+    while ((player[job_choice - 1]->getHP()) && monster->getHP());
+
+    delete player[job_choice - 1];
     delete monster;
 
     return 0;
